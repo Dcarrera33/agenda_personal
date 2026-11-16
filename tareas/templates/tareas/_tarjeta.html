@@ -1,0 +1,61 @@
+{# Tarjeta de una tarea con su lista de objetivos #}
+<div class="card tarea mb-3 borde-{{ tarea.color_prioridad }} {% if tarea.completada %}opacity-75{% endif %}">
+  <div class="card-body">
+    <div class="d-flex align-items-start gap-3">
+      <form method="post" action="{% url 'tareas:alternar_tarea' tarea.pk %}">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+        <input class="form-check-input check-grande" type="checkbox" onchange="this.form.submit()"
+               title="Marcar como completada" {% if tarea.completada %}checked{% endif %}>
+      </form>
+
+      <div class="flex-grow-1">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <h2 class="h5 mb-0 {% if tarea.completada %}text-decoration-line-through{% endif %}">{{ tarea.titulo }}</h2>
+          <span class="badge text-bg-{{ tarea.color_prioridad }}">{{ tarea.get_prioridad_display }}</span>
+        </div>
+
+        <div class="small mt-1 {% if tarea.vencida %}text-danger fw-semibold{% else %}text-body-secondary{% endif %}">
+          📅 {{ tarea.fecha_limite|date:"l j \d\e F \d\e Y" }}
+          {% if not tarea.completada %}· {{ tarea.texto_plazo }}{% endif %}
+        </div>
+
+        {% if tarea.descripcion %}
+          <p class="mt-2 mb-0">{{ tarea.descripcion|linebreaksbr }}</p>
+        {% endif %}
+
+        {% with objetivos=tarea.objetivos.all %}
+        {% if objetivos %}
+          <div class="progress mt-3" style="height: 6px;">
+            <div class="progress-bar bg-{{ tarea.color_prioridad }}" style="width: {{ tarea.progreso }}%"></div>
+          </div>
+          <div class="small text-body-secondary mt-1">{{ tarea.progreso }}% de los objetivos cumplidos</div>
+
+          <ul class="list-unstyled mt-2 mb-0">
+            {% for objetivo in objetivos %}
+              <li>
+                <form method="post" action="{% url 'tareas:alternar_objetivo' objetivo.pk %}" class="form-check">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                  <input class="form-check-input" type="checkbox" id="obj{{ objetivo.pk }}"
+                         onchange="this.form.submit()" {% if objetivo.completado %}checked{% endif %}>
+                  <label class="form-check-label {% if objetivo.completado %}text-decoration-line-through text-body-secondary{% endif %}"
+                         for="obj{{ objetivo.pk }}">{{ objetivo.texto }}</label>
+                </form>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        {% endwith %}
+      </div>
+
+      <div class="dropdown">
+        <button class="btn btn-sm btn-light" data-bs-toggle="dropdown" aria-label="Opciones">⋯</button>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><a class="dropdown-item" href="{% url 'tareas:editar' tarea.pk %}?next={{ request.get_full_path|urlencode }}">Editar</a></li>
+          <li><a class="dropdown-item text-danger" href="{% url 'tareas:borrar' tarea.pk %}">Borrar</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

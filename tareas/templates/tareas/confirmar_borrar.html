@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block titulo %}Borrar tarea{% endblock %}
+{% block contenido %}
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h1 class="h5">¿Borrar «{{ tarea.titulo }}»?</h1>
+        <p class="text-body-secondary mb-0">Se eliminarán también sus {{ tarea.objetivos.count }} objetivos. Esta acción no se puede deshacer.</p>
+      </div>
+      <form method="post" class="card-footer d-flex justify-content-end gap-2">
+        {% csrf_token %}
+        <a href="{% url 'tareas:lista' %}" class="btn btn-light">Cancelar</a>
+        <button class="btn btn-danger">Sí, borrar</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

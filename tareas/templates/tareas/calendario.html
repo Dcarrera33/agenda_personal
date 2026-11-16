@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block titulo %}Calendario{% endblock %}
+{% block contenido %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+  <h1 class="h3 mb-0 text-capitalize">{{ mes_actual|date:"F Y" }}</h1>
+  <div class="btn-group btn-group-sm">
+    <a class="btn btn-outline-secondary" href="{% url 'tareas:calendario_mes' anterior.year anterior.month %}">‹ Anterior</a>
+    <a class="btn btn-outline-secondary" href="{% url 'tareas:calendario' %}">Hoy</a>
+    <a class="btn btn-outline-secondary" href="{% url 'tareas:calendario_mes' siguiente.year siguiente.month %}">Siguiente ›</a>
+  </div>
+</div>
+
+<div class="calendario border rounded">
+  {% for nombre in nombres_dias %}
+    <div class="cabecera">{{ nombre }}</div>
+  {% endfor %}
+
+  {% for semana in semanas %}
+    {% for dia in semana %}
+      <div class="dia {% if not dia.del_mes %}fuera-mes{% endif %} {% if dia.es_hoy %}hoy{% endif %}">
+        <div class="d-flex justify-content-between align-items-center">
+          <span class="numero">{{ dia.fecha.day }}</span>
+          <a class="nueva" href="{% url 'tareas:crear' %}?fecha={{ dia.fecha|date:'Y-m-d' }}&next={{ request.get_full_path|urlencode }}"
+             title="Añadir tarea este día">+</a>
+        </div>
+        {% for tarea in dia.tareas %}
+          <a href="{% url 'tareas:editar' tarea.pk %}?next={{ request.get_full_path|urlencode }}"
+             class="evento bg-{{ tarea.color_prioridad }}-subtle text-{{ tarea.color_prioridad }}-emphasis border-start border-3 border-{{ tarea.color_prioridad }} {% if tarea.completada %}completada{% endif %}"
+             title="{{ tarea.titulo }} · prioridad {{ tarea.get_prioridad_display|lower }}">
+            {% if tarea.completada %}✓ {% endif %}{{ tarea.titulo }}
+          </a>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% endfor %}
+</div>
+
+<div class="d-flex gap-3 small text-body-secondary mt-3">
+  <span><span class="badge text-bg-danger">&nbsp;</span> Alta</span>
+  <span><span class="badge text-bg-warning">&nbsp;</span> Media</span>
+  <span><span class="badge text-bg-success">&nbsp;</span> Baja</span>
+</div>
+{% endblock %}

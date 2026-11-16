@@ -1,0 +1,92 @@
+body {
+  background: #f5f6f8;
+}
+
+/* ---------- Tarjetas de tareas ---------- */
+.tarea {
+  border-left-width: 5px;
+}
+.borde-danger  { border-left-color: var(--bs-danger); }
+.borde-warning { border-left-color: var(--bs-warning); }
+.borde-success { border-left-color: var(--bs-success); }
+
+.check-grande {
+  width: 1.4em;
+  height: 1.4em;
+  margin-top: 0.15em;
+  cursor: pointer;
+}
+
+/* ---------- Calendario ---------- */
+.calendario {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  background: var(--bs-body-bg);
+  overflow: hidden;
+}
+.calendario .cabecera {
+  padding: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.85rem;
+  background: var(--bs-tertiary-bg);
+  border-bottom: 1px solid var(--bs-border-color);
+}
+.calendario .dia {
+  min-height: 110px;
+  padding: 0.35rem;
+  border-right: 1px solid var(--bs-border-color);
+  border-bottom: 1px solid var(--bs-border-color);
+}
+.calendario .dia:nth-child(7n) {
+  border-right: none;
+}
+.calendario .fuera-mes {
+  background: var(--bs-tertiary-bg);
+  color: var(--bs-secondary-color);
+}
+.calendario .numero {
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: 1.8em;
+  height: 1.8em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+.calendario .hoy .numero {
+  background: var(--bs-primary);
+  color: #fff;
+}
+.calendario .nueva {
+  text-decoration: none;
+  color: var(--bs-secondary-color);
+  opacity: 0;
+  padding: 0 0.3rem;
+}
+.calendario .dia:hover .nueva {
+  opacity: 1;
+}
+.calendario .evento {
+  display: block;
+  font-size: 0.75rem;
+  padding: 0.1rem 0.35rem;
+  margin-top: 0.2rem;
+  border-radius: 0.25rem;
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.calendario .evento.completada {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+/* En el móvil el calendario se compacta */
+@media (max-width: 576px) {
+  .calendario .dia { min-height: 70px; padding: 0.15rem; }
+  .calendario .evento { font-size: 0.65rem; padding: 0.05rem 0.2rem; }
+  .calendario .nueva { opacity: 1; }
+}
